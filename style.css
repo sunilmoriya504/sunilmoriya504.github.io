@@ -51,7 +51,7 @@ body {
 }
 
 .nav-links a:hover {
-  color: #915EFF;
+  color:FF6B6B ;
 }
 
 /* ===== 3D CANVAS ===== */
@@ -81,7 +81,7 @@ body {
 }
 
 .hero-tag {
-  color: #915EFF;
+  color:#FFD700 ;
   font-size: 0.9rem;
   letter-spacing: 3px;
   margin-bottom: 1rem;
