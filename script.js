@@ -183,7 +183,7 @@ const SHOP_CONFIG = {
   shopName: "Anita Collection",
   upiId: "yourname@upi",          // 👈 APNA UPI ID YAHAN LIKHEIN
   upiName: "Anita Collection",    // 👈 UPI pe dikhne wala naam
-  phone: "+919999999999",         // 👈 Apna phone number
+  phone: "+91"9797701389,         // 👈 Apna phone number
   // Google Sheets Web App URL (admin.html mein instructions hain)
   googleSheetURL: "YOUR_GOOGLE_SHEET_WEBAPP_URL",
 };
