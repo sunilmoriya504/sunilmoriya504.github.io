@@ -418,89 +418,7 @@
 <script src="shop-script.js"></script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel — Anita Collection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root { --gold:#C9A84C; --dark:#1a1410; --cream:#FDFAF4; --green:#27ae60; --red:#e74c3c; --orange:#f39c12; --border:rgba(201,168,76,0.2); }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:#111; color:#eee; font-family:'Montserrat',sans-serif; min-height:100vh; }
 
-    /* LOGIN */
-    #loginScreen { display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg,#1a1410,#2d2318); }
-    .login-box { background:#1e1a14; border:1px solid var(--border); padding:3rem; width:380px; text-align:center; }
-    .login-box h1 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; color:var(--gold); font-weight:300; margin-bottom:0.5rem; }
-    .login-box p { font-size:0.65rem; letter-spacing:3px; color:#666; text-transform:uppercase; margin-bottom:2rem; }
-    .login-box input { width:100%; background:#111; border:1px solid #333; color:#eee; padding:0.9rem 1rem; font-family:'Montserrat',sans-serif; font-size:0.85rem; outline:none; margin-bottom:1rem; }
-    .login-box input:focus { border-color:var(--gold); }
-    .login-btn { width:100%; background:var(--gold); color:white; border:none; padding:0.9rem; font-family:'Montserrat',sans-serif; font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; cursor:pointer; }
-    .login-btn:hover { background:#b8943d; }
-    .login-hint { font-size:0.65rem; color:#444; margin-top:1rem; }
-
-    /* ADMIN */
-    #adminPanel { display:none; }
-    .admin-nav { background:#1e1a14; border-bottom:1px solid var(--border); padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-    .admin-logo { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--gold); }
-    .admin-nav-right { display:flex; gap:1rem; align-items:center; }
-    .nav-tab { background:none; border:1px solid #333; color:#888; padding:0.4rem 1rem; font-family:'Montserrat',sans-serif; font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.3s; }
-    .nav-tab:hover, .nav-tab.active { border-color:var(--gold); color:var(--gold); }
-    .logout-btn { background:none; border:1px solid #c0392b; color:#c0392b; padding:0.4rem 1rem; font-family:'Montserrat',sans-serif; font-size:0.65rem; letter-spacing:2px; cursor:pointer; }
-
-    /* STATS */
-    .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; padding:2rem; }
-    .stat-card { background:#1e1a14; border:1px solid var(--border); padding:1.5rem; border-radius:2px; }
-    .stat-card .label { font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; color:#666; margin-bottom:0.5rem; }
-    .stat-card .value { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); font-weight:300; }
-    .stat-card .sub { font-size:0.65rem; color:#555; margin-top:0.3rem; }
-
-    /* ORDERS TABLE */
-    .section-header { padding:0 2rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-    .section-header h2 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--gold); font-weight:300; }
-    .orders-container { padding:0 2rem 2rem; overflow-x:auto; }
-    table { width:100%; border-collapse:collapse; background:#1e1a14; font-size:0.75rem; }
-    th { background:#2d2318; color:var(--gold); padding:0.8rem 1rem; text-align:left; font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; font-weight:500; }
-    td { padding:0.9rem 1rem; border-bottom:1px solid #2a2a2a; color:#ccc; vertical-align:top; }
-    tr:hover td { background:#252018; }
-    .status-badge { display:inline-block; padding:0.2rem 0.7rem; border-radius:20px; font-size:0.6rem; letter-spacing:1px; font-weight:600; }
-    .status-pending { background:rgba(243,156,18,0.2); color:var(--orange); border:1px solid var(--orange); }
-    .status-confirmed { background:rgba(39,174,96,0.2); color:var(--green); border:1px solid var(--green); }
-    .status-shipped { background:rgba(52,152,219,0.2); color:#3498db; border:1px solid #3498db; }
-    .status-delivered { background:rgba(201,168,76,0.2); color:var(--gold); border:1px solid var(--gold); }
-    .status-cancelled { background:rgba(231,76,60,0.2); color:var(--red); border:1px solid var(--red); }
-    .action-btns { display:flex; gap:0.4rem; flex-wrap:wrap; }
-    .action-btn { background:none; border:1px solid #333; color:#888; padding:0.2rem 0.6rem; font-size:0.6rem; cursor:pointer; transition:all 0.2s; border-radius:2px; }
-    .action-btn:hover { border-color:var(--gold); color:var(--gold); }
-    .action-btn.confirm { border-color:var(--green); color:var(--green); }
-    .action-btn.cancel { border-color:var(--red); color:var(--red); }
-    .no-orders { text-align:center; padding:4rem; color:#444; }
-
-    /* SEARCH & FILTER */
-    .filter-row { padding:1rem 2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
-    .filter-row input, .filter-row select { background:#1e1a14; border:1px solid #333; color:#eee; padding:0.5rem 1rem; font-family:'Montserrat',sans-serif; font-size:0.75rem; outline:none; }
-    .filter-row input:focus, .filter-row select:focus { border-color:var(--gold); }
-    .export-btn { background:var(--gold); color:white; border:none; padding:0.5rem 1.2rem; font-family:'Montserrat',sans-serif; font-size:0.65rem; letter-spacing:2px; cursor:pointer; margin-left:auto; }
-
-    /* SETTINGS */
-    #settingsTab { display:none; padding:2rem; }
-    .settings-card { background:#1e1a14; border:1px solid var(--border); padding:2rem; max-width:600px; }
-    .settings-card h3 { font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:1.5rem; }
-    .settings-card label { display:block; font-size:0.65rem; color:#666; letter-spacing:2px; text-transform:uppercase; margin-bottom:0.4rem; margin-top:1rem; }
-    .settings-card input, .settings-card textarea { width:100%; background:#111; border:1px solid #333; color:#eee; padding:0.7rem 1rem; font-family:'Montserrat',sans-serif; font-size:0.8rem; outline:none; }
-    .settings-card input:focus { border-color:var(--gold); }
-    .save-btn { margin-top:1.5rem; background:var(--gold); color:white; border:none; padding:0.8rem 2rem; font-family:'Montserrat',sans-serif; font-size:0.7rem; letter-spacing:2px; cursor:pointer; }
-    .sheet-instructions { background:#111; border:1px solid #333; padding:1.5rem; margin-top:2rem; }
-    .sheet-instructions h4 { color:var(--gold); font-size:0.7rem; letter-spacing:2px; margin-bottom:1rem; }
-    .sheet-instructions ol { padding-left:1.2rem; }
-    .sheet-instructions li { font-size:0.72rem; color:#888; line-height:2; }
-    .sheet-instructions code { background:#222; padding:0.1rem 0.4rem; color:var(--gold); font-size:0.7rem; border-radius:2px; }
-    .toast-admin { position:fixed; bottom:2rem; right:2rem; background:var(--green); color:white; padding:0.8rem 1.5rem; font-size:0.75rem; border-radius:2px; display:none; z-index:999; }
-  </style>
-</head>
-<body>
 
 <!-- LOGIN -->
 <div id="loginScreen">
@@ -512,7 +430,6 @@
     <p class="login-hint">Default password: admin123 (change in settings)</p>
   </div>
 </div>
-
 <!-- ADMIN PANEL -->
 <div id="adminPanel">
   <nav class="admin-nav">
