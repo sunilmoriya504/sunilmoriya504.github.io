@@ -246,3 +246,704 @@
   <script src="script.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anita Collection — Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="shop-style.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo">Anita <span>Collection</span></div>
+  <div class="nav-search">
+    <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()"/>
+    <span class="search-icon">🔍</span>
+  </div>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <a href="admin.html" class="admin-link">⚙️</a>
+  </div>
+</nav>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <div class="hero-text">
+    <p class="hero-sub">New Arrivals 2026 ✦</p>
+    <h1>Premium Women's<br/><em>Fashion Collection</em></h1>
+    <p class="hero-desc">Handpicked luxury styles — Sarees, Lehengas, Kurtis & more</p>
+    <a href="#products" class="shop-now-btn">Shop Now →</a>
+  </div>
+  <div class="hero-visual">🥻</div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
+  <button class="filter-btn" onclick="filterCategory('saree', this)">Sarees</button>
+  <button class="filter-btn" onclick="filterCategory('lehenga', this)">Lehengas</button>
+  <button class="filter-btn" onclick="filterCategory('kurti', this)">Kurtis</button>
+  <button class="filter-btn" onclick="filterCategory('anarkali', this)">Anarkali</button>
+  <button class="filter-btn" onclick="filterCategory('palazzo', this)">Palazzo</button>
+  <button class="filter-btn" onclick="filterCategory('gown', this)">Gowns</button>
+  <button class="filter-btn" onclick="filterCategory('suit', this)">Suits</button>
+</div>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <span id="productCount">Showing all products</span>
+  <select id="sortSelect" onchange="sortProducts()">
+    <option value="default">Sort: Default</option>
+    <option value="low">Price: Low to High</option>
+    <option value="high">Price: High to Low</option>
+    <option value="name">Name: A-Z</option>
+  </select>
+</div>
+
+<!-- PRODUCTS GRID -->
+<div class="products-grid" id="productsGrid"></div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>Your Cart 🛒</h2>
+    <button onclick="toggleCart()" class="close-cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="empty-cart">Your cart is empty 🛍️</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+    <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Pay →</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="product-modal" id="productModal">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="checkout-overlay" id="checkoutOverlay"></div>
+<div class="checkout-modal" id="checkoutModal">
+  <button class="modal-close" onclick="closeCheckout()">✕</button>
+  <div class="checkout-content">
+    <h2>Complete Your Order</h2>
+    <div class="checkout-steps">
+      <!-- Step 1: Details -->
+      <div class="step" id="step1">
+        <h3>📋 Your Details</h3>
+        <input type="text" id="custName" placeholder="Full Name *" required/>
+        <input type="tel" id="custPhone" placeholder="Mobile Number *" required/>
+        <input type="email" id="custEmail" placeholder="Email (optional)"/>
+        <textarea id="custAddress" placeholder="Delivery Address *" rows="3" required></textarea>
+        <input type="text" id="custPincode" placeholder="Pincode *" required/>
+        <button class="next-btn" onclick="goToPayment()">Next: Pay →</button>
+      </div>
+      <!-- Step 2: Payment -->
+      <div class="step" id="step2" style="display:none">
+        <h3>💳 Pay via UPI</h3>
+        <div class="order-summary" id="orderSummary"></div>
+        <div class="upi-section">
+          <div class="qr-box">
+            <div class="qr-placeholder" id="qrCode">
+              <!-- QR Code will be generated -->
+              <canvas id="qrCanvas"></canvas>
+            </div>
+            <p class="qr-hint">Scan QR Code to pay</p>
+          </div>
+          <div class="upi-divider">— OR —</div>
+          <div class="upi-id-box">
+            <p>Pay directly to UPI ID:</p>
+            <div class="upi-id-display">
+              <span id="upiIdText">yourname@upi</span>
+              <button onclick="copyUPI()" class="copy-btn">Copy</button>
+            </div>
+          </div>
+          <div class="upi-apps">
+            <p>Pay using:</p>
+            <div class="app-icons">
+              <div class="app-icon">📱 GPay</div>
+              <div class="app-icon">💜 PhonePe</div>
+              <div class="app-icon">🟡 Paytm</div>
+              <div class="app-icon">🔵 BHIM</div>
+            </div>
+          </div>
+        </div>
+        <div class="payment-confirm">
+          <input type="text" id="utrNumber" placeholder="Enter UTR/Transaction ID after payment *"/>
+          <p class="utr-hint">After paying, enter the transaction ID shown in your UPI app</p>
+          <button class="confirm-pay-btn" onclick="confirmPayment()">✅ Confirm Payment</button>
+          <button class="back-btn" onclick="goBack()">← Back</button>
+        </div>
+      </div>
+      <!-- Step 3: Success -->
+      <div class="step" id="step3" style="display:none">
+        <div class="success-screen">
+          <div class="success-icon">🎉</div>
+          <h3>Order Placed Successfully!</h3>
+          <p>Thank you for your order.</p>
+          <div class="order-id-box">
+            <p>Your Order ID:</p>
+            <strong id="displayOrderId"></strong>
+          </div>
+          <p class="success-note">We will confirm your order within 1-2 hours on your mobile number.</p>
+          <button class="continue-btn" onclick="closeCheckout(); window.location.reload()">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<footer>
+  <p>© 2026 Anita Collection — All Rights Reserved</p>
+  <p>📞 Call/WhatsApp: <a href="tel:+919999999999">+91 99999 99999</a></p>
+</footer>
+
+<script src="shop-script.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AstroVerse — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --neon: #00f5ff;
+  --neon2: #7c3aed;
+  --neon3: #f59e0b;
+  --green: #00ff88;
+  --red: #ff4757;
+  --bg: #020408;
+  --bg2: #060f1e;
+  --bg3: #0a1628;
+  --card: rgba(6,15,30,0.9);
+  --border: rgba(0,245,255,0.12);
+  --border2: rgba(0,245,255,0.25);
+  --text: #e2e8f0;
+  --muted: #64748b;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* LOGIN SCREEN */
+#login-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  flex-direction: column;
+}
+.login-box {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  width: 100%; max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0,245,255,0.08);
+}
+.login-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.2rem; font-weight: 900;
+  background: linear-gradient(90deg, var(--neon), var(--neon2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+.login-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 2.5rem; }
+.login-label { display: block; text-align: left; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+.login-input {
+  width: 100%; background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  color: var(--text); padding: 0.85rem 1rem;
+  font-family: 'Syne', sans-serif; font-size: 0.95rem;
+  outline: none; margin-bottom: 1.2rem;
+  transition: border-color 0.3s;
+}
+.login-input:focus { border-color: var(--neon); }
+.login-btn {
+  width: 100%; padding: 0.9rem;
+  background: linear-gradient(135deg, var(--neon), var(--neon2));
+  border: none; border-radius: 0.75rem;
+  color: #000; font-family: 'Syne', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+  margin-top: 0.5rem;
+}
+.login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.login-error { color: var(--red); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+/* MAIN LAYOUT */
+#app { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  position: fixed; left: 0; top: 0;
+  display: flex; flex-direction: column;
+  z-index: 50;
+}
+.sidebar-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem; font-weight: 900;
+  background: linear-gradient(90deg, var(--neon), var(--neon2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 0.3rem;
+}
+.sidebar-role { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2.5rem; }
+.nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1rem; border-radius: 0.75rem;
+  color: var(--muted); font-size: 0.875rem;
+  cursor: pointer; transition: all 0.2s;
+  margin-bottom: 0.3rem; border: 1px solid transparent;
+}
+.nav-item:hover { background: rgba(0,245,255,0.05); color: var(--text); }
+.nav-item.active { background: rgba(0,245,255,0.08); color: var(--neon); border-color: var(--border); }
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.sidebar-footer { margin-top: auto; }
+.logout-btn {
+  width: 100%; padding: 0.7rem;
+  background: rgba(255,71,87,0.1);
+  border: 1px solid rgba(255,71,87,0.2);
+  border-radius: 0.75rem;
+  color: var(--red); font-family: 'Syne', sans-serif;
+  font-size: 0.85rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.logout-btn:hover { background: rgba(255,71,87,0.2); }
+
+/* MAIN CONTENT */
+.main {
+  margin-left: 240px;
+  flex: 1; padding: 2.5rem;
+  min-height: 100vh;
+}
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2.5rem;
+}
+.page-title { font-family: 'Orbitron', monospace; font-size: 1.5rem; font-weight: 700; }
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+.live-badge {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; color: var(--green);
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  padding: 0.4rem 0.9rem; border-radius: 2rem;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
+
+/* STAT CARDS */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
+.stat { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; }
+.stat-val { font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 900; display: block; margin-bottom: 0.3rem; }
+.stat-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* TABS */
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.tab {
+  padding: 0.55rem 1.3rem; border-radius: 2rem;
+  font-size: 0.82rem; font-family: 'Syne', sans-serif;
+  cursor: pointer; border: 1px solid var(--border);
+  color: var(--muted); background: transparent;
+  transition: all 0.2s;
+}
+.tab.active, .tab:hover { border-color: var(--neon); color: var(--neon); background: rgba(0,245,255,0.06); }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* FORM CARD */
+.form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1.2rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+.form-card-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+input[type=text], input[type=number], input[type=url], textarea, select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  color: var(--text); padding: 0.75rem 1rem;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem;
+  outline: none; transition: border-color 0.3s;
+  width: 100%;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--neon); }
+textarea { resize: vertical; min-height: 90px; }
+select option { background: var(--bg2); }
+
+/* BUTTONS */
+.btn { padding: 0.75rem 1.6rem; border-radius: 0.65rem; font-family: 'Syne', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.25s; }
+.btn-primary { background: linear-gradient(135deg, var(--neon), var(--neon2)); color: #000; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,245,255,0.25); }
+.btn-danger { background: rgba(255,71,87,0.15); color: var(--red); border: 1px solid rgba(255,71,87,0.3); }
+.btn-danger:hover { background: rgba(255,71,87,0.25); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+.btn-sm { padding: 0.45rem 1rem; font-size: 0.8rem; }
+.btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+/* IMAGE PREVIEW */
+.img-preview {
+  width: 100%; height: 160px; border-radius: 0.65rem;
+  border: 2px dashed var(--border);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; background: var(--bg3);
+  cursor: pointer; transition: border-color 0.3s;
+  position: relative;
+}
+.img-preview:hover { border-color: var(--neon); }
+.img-preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.img-preview-text { color: var(--muted); font-size: 0.85rem; text-align: center; pointer-events: none; }
+
+/* PRODUCTS TABLE */
+.products-table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1.2rem;
+  overflow: hidden;
+}
+.table-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.table-header h3 { font-family: 'Orbitron', monospace; font-size: 0.95rem; }
+.search-input {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 0.5rem; color: var(--text);
+  padding: 0.5rem 1rem; font-family: 'Syne', sans-serif;
+  font-size: 0.85rem; outline: none; width: 200px;
+  transition: border-color 0.3s;
+}
+.search-input:focus { border-color: var(--neon); }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: rgba(0,245,255,0.04); }
+th {
+  padding: 0.9rem 1.2rem; text-align: left;
+  font-size: 0.75rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border);
+}
+td { padding: 1rem 1.2rem; border-bottom: 1px solid rgba(0,245,255,0.05); font-size: 0.875rem; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(0,245,255,0.02); }
+.prod-img-thumb { width: 48px; height: 36px; object-fit: cover; border-radius: 0.4rem; border: 1px solid var(--border); }
+.badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 700; }
+.badge-new { background: rgba(0,245,255,0.1); color: var(--neon); }
+.badge-popular { background: rgba(124,58,237,0.15); color: #a78bfa; }
+.badge-sale { background: rgba(245,158,11,0.15); color: var(--neon3); }
+.badge-default { background: rgba(100,116,139,0.15); color: var(--muted); }
+.action-btns { display: flex; gap: 0.5rem; }
+.empty-state { text-align: center; padding: 4rem; color: var(--muted); }
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+/* TOAST */
+#toast {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 0.75rem; padding: 1rem 1.5rem;
+  font-size: 0.875rem; z-index: 9999;
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  display: flex; align-items: center; gap: 0.75rem;
+  max-width: 320px;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.success { border-color: rgba(0,255,136,0.3); }
+#toast.error { border-color: rgba(255,71,87,0.3); }
+
+/* EXPORT CODE */
+.code-block {
+  background: #000; border: 1px solid var(--border);
+  border-radius: 0.75rem; padding: 1.5rem;
+  font-family: monospace; font-size: 0.8rem;
+  color: var(--neon); overflow-x: auto;
+  white-space: pre; max-height: 400px;
+  overflow-y: auto; line-height: 1.6;
+}
+
+/* SETTINGS */
+.settings-group { margin-bottom: 2rem; }
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 0; border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-info h4 { font-size: 0.9rem; margin-bottom: 0.2rem; }
+.settings-info p { font-size: 0.8rem; color: var(--muted); }
+.toggle {
+  position: relative; width: 44px; height: 24px;
+  background: var(--bg3); border-radius: 12px;
+  border: 1px solid var(--border); cursor: pointer;
+  transition: all 0.3s;
+}
+.toggle.on { background: rgba(0,245,255,0.2); border-color: var(--neon); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; top: 3px; left: 3px;
+  background: var(--muted); border-radius: 50%;
+  transition: all 0.3s;
+}
+.toggle.on::after { left: 21px; background: var(--neon); }
+
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim { animation: fadeIn 0.4s ease both; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 1.2rem; padding: 2rem;
+  width: 90%; max-width: 560px;
+  transform: scale(0.95);
+  transition: transform 0.3s;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal-title { font-family: 'Orbitron', monospace; font-size: 1rem; margin-bottom: 1.5rem; }
+
+@media (max-width: 768px) {
+  .sidebar { width: 100%; min-height: auto; position: relative; }
+  .main { margin-left: 0; padding: 1.5rem; }
+  #app { flex-direction: column; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div style="position:fixed;inset:0;overflow:hidden;z-index:-1;">
+    <canvas id="login-bg"></canvas>
+  </div>
+  <div class="login-box">
+    <div class="login-logo">ASTROVERSE</div>
+    <div class="login-sub">Admin Panel — Secure Login</div>
+    <label class="login-label">Username</label>
+    <input class="login-input" id="login-user" type="text" placeholder="admin" />
+    <label class="login-label">Password</label>
+    <input class="login-input" id="login-pass" type="password" placeholder="••••••••" />
+    <div class="login-error" id="login-error">❌ Wrong username or password</div>
+    <button class="login-btn" onclick="doLogin()">Login →</button>
+    <p style="margin-top:1.2rem;font-size:0.75rem;color:var(--muted);">Default: admin / admin123</p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">ASTROVERSE</div>
+    <div class="sidebar-role">Admin Panel</div>
+
+    <nav>
+      <div class="nav-item active" onclick="showTab('dashboard')">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showTab('add')">
+        <span class="nav-icon">➕</span> Add Product
+      </div>
+      <div class="nav-item" onclick="showTab('manage')">
+        <span class="nav-icon">📦</span> All Products
+      </div>
+      <div class="nav-item" onclick="showTab('export')">
+        <span class="nav-icon">💾</span> Export Code
+      </div>
+      <div class="nav-item" onclick="showTab('settings')">
+        <span class="nav-icon">⚙️</span> Settings
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="section active anim">
+      <div class="topbar">
+        <div class="page-title">Dashboard</div>
+        <div class="topbar-right">
+          <div class="live-badge"><div class="live-dot"></div> Live</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-val" style="color:var(--neon);" id="stat-total">0</span>
+          <span class="stat-lbl">Total Products</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val" style="color:#a78bfa;" id="stat-active">0</span>
+          <span class="stat-lbl">Active</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val" style="color:var(--neon3);" id="stat-value">₹0</span>
+          <span class="stat-lbl">Total Value</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val" style="color:var(--green);" id="stat-cats">0</span>
+          <span class="stat-lbl">Categories</span>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title">📋 Recent Products</div>
+        <div id="recent-list" style="display:flex;flex-direction:column;gap:0.8rem;">
+          <div class="empty-state"><div class="empty-icon">📦</div><p>No products yet. Add your first product!</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div id="tab-add" class="section">
+      <div class="topbar">
+        <div class="page-title" id="form-title">Add Product</div>
+      </div>
+
+      <div class="form-card anim">
+        <div class="form-card-title">🛍️ Product Details</div>
+        <input type="hidden" id="edit-id" value="">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Product Name *</label>
+            <input type="text" id="p-name" placeholder="e.g. Cosmic Headphones" />
+          </div>
+          <div class="form-group">
+            <label>Price (₹) *</label>
+            <input type="number" id="p-price" placeholder="999" />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="p-cat">
+              <option value="Electronics">Electronics</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Food">Food</option>
+              <option value="Beauty">Beauty</option>
+              <option value="Home">Home & Living</option>
+              <option value="Sports">Sports</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Badge / Tag</label>
+            <select id="p-badge">
+              <option value="new">🆕 New</option>
+              <option value="popular">🔥 Popular</option>
+              <option value="sale">💥 Sale</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Original Price (for discount)</label>
+            <input type="number" id="p-original" placeholder="1499 (optional)" />
+          </div>
+          <div class="form-group">
+            <label>Stock Quantity</label>
+            <input type="number" id="p-stock" placeholder="100" />
+          </div>
+          <div class="form-group full">
+            <label>Description *</label>
+            <textarea id="p-desc" placeholder="Apne product ki detail likho..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Image URL</label>
+            <input type="url" id="p-img" placeholder="https://... (image link paste karo)" oninput="previewImg(this.value)" />
+          </div>
+          <div class="form-group full">
+            <label>Image Preview</label>
+            <div class="img-preview" id="img-preview-box">
+              <img id="img-preview-el" src="" alt="preview" />
+              <div class="img-preview-text" id="img-preview-text">🖼️ Image URL daalo — yahan preview dikhega</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Buy Button Link</label>
+            <input type="url" id="p-link" placeholder="https://... (WhatsApp/order link)" />
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="p-status">
+              <option value="active">✅ Active (Visible)</option>
+              <option value="hidden">🔒 Hidden</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveProduct()">💾 Save Product</button>
+          <button class="btn btn-ghost" onclick="resetForm()">↺ Reset Form</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE PRODUCTS -->
+    <div id="tab-manage" class="section">
+      <div class="topbar">
+        <div class="page-title">All Products</div>
+        <div class="topbar-right">
+          <input class="search-input" type="text" placeholder="Search..." oninput="filterProducts(this.value)"
