@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anita Collection — Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="shop-style.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo">Anita <span>Collection</span></div>
+  <div class="nav-search">
+    <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()"/>
+    <span class="search-icon">🔍</span>
+  </div>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <a href="admin.html" class="admin-link">⚙️</a>
+  </div>
+</nav>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <div class="hero-text">
+    <p class="hero-sub">New Arrivals 2026 ✦</p>
+    <h1>Premium Women's<br/><em>Fashion Collection</em></h1>
+    <p class="hero-desc">Handpicked luxury styles — Sarees, Lehengas, Kurtis & more</p>
+    <a href="#products" class="shop-now-btn">Shop Now →</a>
+  </div>
+  <div class="hero-visual">🥻</div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
+  <button class="filter-btn" onclick="filterCategory('saree', this)">Sarees</button>
+  <button class="filter-btn" onclick="filterCategory('lehenga', this)">Lehengas</button>
+  <button class="filter-btn" onclick="filterCategory('kurti', this)">Kurtis</button>
+  <button class="filter-btn" onclick="filterCategory('anarkali', this)">Anarkali</button>
+  <button class="filter-btn" onclick="filterCategory('palazzo', this)">Palazzo</button>
+  <button class="filter-btn" onclick="filterCategory('gown', this)">Gowns</button>
+  <button class="filter-btn" onclick="filterCategory('suit', this)">Suits</button>
+</div>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <span id="productCount">Showing all products</span>
+  <select id="sortSelect" onchange="sortProducts()">
+    <option value="default">Sort: Default</option>
+    <option value="low">Price: Low to High</option>
+    <option value="high">Price: High to Low</option>
+    <option value="name">Name: A-Z</option>
+  </select>
+</div>
+
+<!-- PRODUCTS GRID -->
+<div class="products-grid" id="productsGrid"></div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>Your Cart 🛒</h2>
+    <button onclick="toggleCart()" class="close-cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="empty-cart">Your cart is empty 🛍️</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+    <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Pay →</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="product-modal" id="productModal">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="checkout-overlay" id="checkoutOverlay"></div>
+<div class="checkout-modal" id="checkoutModal">
+  <button class="modal-close" onclick="closeCheckout()">✕</button>
+  <div class="checkout-content">
+    <h2>Complete Your Order</h2>
+    <div class="checkout-steps">
+      <!-- Step 1: Details -->
+      <div class="step" id="step1">
+        <h3>📋 Your Details</h3>
+        <input type="text" id="custName" placeholder="Full Name *" required/>
+        <input type="tel" id="custPhone" placeholder="Mobile Number *" required/>
+        <input type="email" id="custEmail" placeholder="Email (optional)"/>
+        <textarea id="custAddress" placeholder="Delivery Address *" rows="3" required></textarea>
+        <input type="text" id="custPincode" placeholder="Pincode *" required/>
+        <button class="next-btn" onclick="goToPayment()">Next: Pay →</button>
+      </div>
+      <!-- Step 2: Payment -->
+      <div class="step" id="step2" style="display:none">
+        <h3>💳 Pay via UPI</h3>
+        <div class="order-summary" id="orderSummary"></div>
+        <div class="upi-section">
+          <div class="qr-box">
+            <div class="qr-placeholder" id="qrCode">
+              <!-- QR Code will be generated -->
+              <canvas id="qrCanvas"></canvas>
+            </div>
+            <p class="qr-hint">Scan QR Code to pay</p>
+          </div>
+          <div class="upi-divider">— OR —</div>
+          <div class="upi-id-box">
+            <p>Pay directly to UPI ID:</p>
+            <div class="upi-id-display">
+              <span id="upiIdText">yourname@upi</span>
+              <button onclick="copyUPI()" class="copy-btn">Copy</button>
+            </div>
+          </div>
+          <div class="upi-apps">
+            <p>Pay using:</p>
+            <div class="app-icons">
+              <div class="app-icon">📱 GPay</div>
+              <div class="app-icon">💜 PhonePe</div>
+              <div class="app-icon">🟡 Paytm</div>
+              <div class="app-icon">🔵 BHIM</div>
+            </div>
+          </div>
+        </div>
+        <div class="payment-confirm">
+          <input type="text" id="utrNumber" placeholder="Enter UTR/Transaction ID after payment *"/>
+          <p class="utr-hint">After paying, enter the transaction ID shown in your UPI app</p>
+          <button class="confirm-pay-btn" onclick="confirmPayment()">✅ Confirm Payment</button>
+          <button class="back-btn" onclick="goBack()">← Back</button>
+        </div>
+      </div>
+      <!-- Step 3: Success -->
+      <div class="step" id="step3" style="display:none">
+        <div class="success-screen">
+          <div class="success-icon">🎉</div>
+          <h3>Order Placed Successfully!</h3>
+          <p>Thank you for your order.</p>
+          <div class="order-id-box">
+            <p>Your Order ID:</p>
+            <strong id="displayOrderId"></strong>
+          </div>
+          <p class="success-note">We will confirm your order within 1-2 hours on your mobile number.</p>
+          <button class="continue-btn" onclick="closeCheckout(); window.location.reload()">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<footer>
+  <p>© 2026 Anita Collection — All Rights Reserved</p>
+  <p>📞 Call/WhatsApp: <a href="tel:+919999999999">+91 99999 99999</a></p>
+</footer>
+
+<script src="shop-script.js"></script>
+</body>
+</html>
