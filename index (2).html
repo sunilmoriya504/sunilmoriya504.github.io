@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anita Collection — Women's Fashion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="cursor-canvas"></canvas>
+<div id="cursor-follower"><div class="cursor-dot"></div><div class="cursor-ring"></div></div>
+
+<nav class="navbar">
+    <div class="nav-brand" data-secret-trigger id="navBrand">
+        <span class="brand-icon">✦</span>
+        <span class="brand-name">Anita Collection</span>
+    </div>
+    <div class="nav-links">
+        <a href="#shop" class="nav-link active" data-goto="shop">Shop</a>
+        <a href="#orders" class="nav-link" data-goto="orders">Orders</a>
+    </div>
+    <div class="nav-cart" id="navCart">
+        <span class="cart-count" id="cartCount">0</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+    </div>
+</nav>
+
+<section class="customer-view" id="customerView">
+
+    <div class="hero" id="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div><div class="shape shape-2"></div>
+            <div class="shape shape-3"></div><div class="shape shape-4"></div>
+            <div class="shape shape-5"></div><div class="shape shape-6"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge"><span class="badge-pulse"></span>New Collection 2026</div>
+            <h1 class="hero-title">
+                <span class="hero-title-line">Dress Like</span>
+                <span class="hero-title-line gradient-text">You Mean It</span>
+            </h1>
+            <p class="hero-subtitle">Curated women's fashion — elegance redefined.</p>
+            <div class="hero-cta">
+                <button class="btn btn-primary" data-goto="shop"><span>Shop Now</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <button class="btn btn-ghost" data-goto="orders"><span>Track Order</span></button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item"><span class="stat-number" data-count="1200">0</span><span class="stat-label">Products</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item"><span class="stat-number" data-count="8500">0</span><span class="stat-label">Happy Customers</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item"><span class="stat-number" data-count="99">0</span><span class="stat-suffix">%</span><span class="stat-label">Satisfaction</span></div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="floating-cards">
+                <div class="float-card fc-1"><div class="fc-emoji">🛍️</div><div class="fc-info"><div class="fc-title">New Order</div><div class="fc-sub">2 min ago</div></div></div>
+                <div class="float-card fc-2"><div class="fc-emoji">⭐</div><div class="fc-info"><div class="fc-title">4.9 Rating</div><div class="fc-sub">500+ reviews</div></div></div>
+                <div class="float-card fc-3"><div class="fc-emoji">🚚</div><div class="fc-info"><div class="fc-title">Free Shipping</div><div class="fc-sub">Orders over ₹999</div></div></div>
+                <div class="float-card fc-4"><div class="fc-emoji">💳</div><div class="fc-info"><div class="fc-title">UPI Accepted</div><div class="fc-sub">All apps</div></div></div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator"><div class="scroll-line"></div></div>
+    </div>
+
+    <div class="shop-section" id="shop">
+        <div class="section-header">
+            <div class="section-tag">Collection</div>
+            <h2 class="section-title">Shop Our Collection</h2>
+        </div>
+        <div class="shop-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="dresses">Dresses</button>
+            <button class="filter-btn" data-filter="tops">Tops</button>
+            <button class="filter-btn" data-filter="bottoms">Bottoms</button>
+            <button class="filter-btn" data-filter="ethnic">Ethnic</button>
+            <button class="filter-btn" data-filter="accessories">Accessories</button>
+        </div>
+        <div class="search-bar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="searchInput" placeholder="Search products...">
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <div class="orders-section" id="orders">
+        <div class="section-header"><div class="section-tag">Tracking</div><h2 class="section-title">Track Your Order</h2></div>
+        <div class="order-lookup">
+            <input type="text" id="orderLookupInput" placeholder="Enter your order ID...">
+            <button class="btn btn-primary" id="lookupOrderBtn"><span>Track</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+        <div class="order-result" id="orderResult"></div>
+    </div>
+
+</section>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+        <h3>Your Cart <span id="cartItemCount">(0)</span></h3>
+        <button class="cart-close" id="cartClose">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-empty" id="cartEmpty"><div class="cart-empty-icon">🛒</div><p>Your cart is empty</p></div>
+    <div class="cart-footer" id="cartFooter">
+        <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0.00</span></div>
+        <div class="cart-tax"><span>GST (18%)</span><span id="cartTax">₹0.00</span></div>
+        <div class="cart-total"><span>Total</span><span id="cartTotal">₹0.00</span></div>
+        <button class="btn btn-checkout" id="checkoutBtn"><span>Proceed to Checkout</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="checkoutModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Checkout</h3>
+            <button class="modal-close" id="modalClose">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="checkout-step active" data-step="1">
+                <h4>Step 1: Your Details</h4>
+                <div class="form-group"><label>Full Name *</label><input type="text" id="checkoutName" placeholder="Priya Sharma"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="checkoutEmail" placeholder="priya@example.com"></div>
+                <div class="form-group"><label>Phone *</label><input type="tel" id="checkoutPhone" placeholder="+91 98765 43210"></div>
+            </div>
+            <div class="checkout-step" data-step="2">
+                <h4>Step 2: Shipping Address</h4>
+                <div class="form-group"><label>Address *</label><input type="text" id="checkoutAddress" placeholder="42 MG Road, Indore"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>City *</label><input type="text" id="checkoutCity" placeholder="Indore"></div>
+                    <div class="form-group"><label>PIN Code</label><input type="text" id="checkoutZip" placeholder="452001"></div>
+                </div>
+            </div>
+            <div class="checkout-step" data-step="3">
+                <h4>Step 3: Payment — UPI</h4>
+                <div class="upi-qr-placeholder">
+                    <div class="upi-box">
+                        <span class="upi-icon">📱</span>
+                        <p>Pay via any UPI app</p>
+                        <p class="upi-id">anita-collection@upi</p>
+                    </div>
+                </div>
+                <div class="form-group"><label>UPI Transaction ID *</label><input type="text" id="checkoutUPI" placeholder="TXN123456789"></div>
+            </div>
+            <div class="checkout-step" data-step="4">
+                <div class="order-confirmation">
+                    <div class="confirm-icon">✅</div>
+                    <h4>Order Placed!</h4>
+                    <p>Order ID: <strong id="newOrderId">--</strong></p>
+                    <p>Delivery in <strong>3-5 business days</strong></p>
+                    <button class="btn btn-primary" id="continueShoppingBtn"><span>Continue Shopping</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" id="modalFooter">
+            <button class="btn btn-ghost" id="prevStepBtn" style="display:none;">Back</button>
+            <button class="btn btn-primary" id="nextStepBtn"><span>Next</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="pin-modal" id="pinModal">
+    <div class="pin-card">
+        <div class="pin-icon">🔐</div>
+        <h3>Owner Access</h3>
+        <p>Enter your PIN to open the control panel</p>
+        <div class="pin-display" id="pinDisplay"></div>
+        <div class="pin-error" id="pinError" style="display:none;">Incorrect PIN. Try again.</div>
+        <div class="pin-keypad" id="pinKeypad"></div>
+        <p class="pin-hint">Default PIN: <strong>1234</strong> · <a href="#" id="resetPinLink">Reset PIN</a></p>
+    </div>
+</div>
+
+<div class="admin-overlay" id="adminOverlay"></div>
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-topbar">
+        <div class="admin-brand">
+            <span class="brand-icon">✦</span>
+            <span class="admin-title">Owner Dashboard</span>
+            <span class="admin-badge">Full Control</span>
+        </div>
+        <div class="admin-nav">
+            <button class="admin-tab active" data-admin-tab="dashboard"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</button>
+            <button class="admin-tab" data-admin-tab="products"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Products</button>
+            <button class="admin-tab" data-admin-tab="orders-admin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>Orders</button>
+            <button class="admin-tab" data-admin-tab="add-product"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>Add Product</button>
+        </div>
+        <button class="admin-close" id="adminClose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+
+    <div class="admin-content active" id="adminDashboard">
+        <div class="admin-stats">
+            <div class="a-stat-card a-stat-revenue"><div class="a-stat-icon">💰</div><div class="a-stat-info"><div class="a-stat-label">Total Revenue</div><div class="a-stat-value" id="adminRevenue">₹0</div></div></div>
+            <div class="a-stat-card a-stat-profit"><div class="a-stat-icon">📈</div><div class="a-stat-info"><div class="a-stat-label">Total Profit</div><div class="a-stat-value" id="adminProfit">₹0</div></div></div>
+            <div class="a-stat-card a-stat-orders"><div class="a-stat-icon">📦</div><div class="a-stat-info"><div class="a-stat-label">Total Orders</div><div class="a-stat-value" id="adminTotalOrders">0</div></div></div>
+            <div class="a-stat-card a-stat-products"><div class="a-stat-icon">👗</div><div class="a-stat-info"><div class="a-stat-label">Active Products</div><div class="a-stat-value" id="adminProductCount">0</div></div></div>
+        </div>
+        <div class="admin-chart-card">
+            <div class="chart-header"><h4>Revenue & Profit</h4>
+                <div class="chart-period-btns">
+                    <button class="chart-period-btn active" data-period="week">Week</button>
+                    <button class="chart-period-btn" data-period="month">Month</button>
+                    <button class="chart-period-btn" data-period="year">Year</button>
+                </div>
+            </div>
+            <div class="chart-container"><canvas id="revenueChart"></canvas></div>
+            <div class="chart-legend"><span class="legend-item"><span class="legend-dot" style="background:#a855f7;"></span> Revenue</span><span class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span> Profit</span></div>
+        </div>
+        <div class="admin-orders-table">
+            <div class="table-header"><h4>Recent Orders</h4>
+                <div class="table-filter-btns">
+                    <button class="table-filter-btn active" data-status="all">All</button>
+                    <button class="table-filter-btn" data-status="pending">Pending</button>
+                    <button class="table-filter-btn" data-status="confirmed">Confirmed</button>
+                    <button class="table-filter-btn" data-status="shipped">Shipped</button>
+                    <button class="table-filter-btn" data-status="delivered">Delivered</button>
+                </div>
+            </div>
+            <div class="table-wrapper"><table><thead><tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminOrdersTable"></tbody></table></div>
+        </div>
+        <div class="admin-category-card"><h4>Sales by Category</h4><div class="category-bars" id="categoryBars"></div></div>
+    </div>
+
+    <div class="admin-content" id="adminProducts">
+        <div class="admin-section-header"><h3>Product Management</h3><button class="btn btn-primary" id="adminAddProductBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Add Product</button></div>
+        <div class="admin-products-grid" id="adminProductsGrid"></div>
+    </div>
+
+    <div class="admin-content" id="adminOrdersAdmin">
+        <div class="admin-section-header"><h3>All Orders</h3></div>
+        <div class="admin-full-orders-table"><table><thead><tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Cost</th><th>Profit</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminFullOrdersTable"></tbody></table></div>
+    </div>
+
+    <div class="admin-content" id="adminAddProduct">
+        <div class="admin-section-header"><h3>Add / Edit Product</h3></div>
+        <form class="product-form" id="productForm">
+            <input type="hidden" id="editProductId" value="">
+            <div class="form-row-2">
+                <div class="form-group"><label>Product Name *</label><input type="text" id="productName" required placeholder="Embroidered Kurti"></div>
+                <div class="form-group"><label>Category *</label>
+                    <select id="productCategory">
+                        <option value="dresses">Dresses</option><option value="tops">Tops</option><option value="bottoms">Bottoms</option>
+                        <option value="ethnic">Ethnic</option><option value="accessories">Accessories</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row-2">
+                <div class="form-group"><label>Price (₹) *</label><input type="number" id="productPrice" required step="1" min="0" placeholder="899"></div>
+                <div class="form-group"><label>Cost (₹) *</label><input type="number" id="productCost" required step="1" min="0" placeholder="280"></div>
+            </div>
+            <div class="form-row-2">
+                <div class="form-group"><label>Rating (1–5)</label><input type="number" id="productRating" min="1" max="5" step="0.1" placeholder="4.5"></div>
+                <div class="form-group"><label>Reviews</label><input type="number" id="productReviews" min="0" placeholder="50"></div>
+            </div>
+            <div class="form-group"><label>Description</label><textarea id="productDescription" rows="3" placeholder="Beautiful hand-embroidered kurti..."></textarea></div>
+            <div class="form-group"><label>Emoji</label><input type="text" id="productEmoji" placeholder="👚" maxlength="2"></div>
+            <div class="form-group"><label>Accent Color</label><input type="color" id="productColor" value="#a855f7"></div>
+            <div class="form-group"><label>Stock *</label><input type="number" id="productStock" required min="0" placeholder="100"></div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span id="productFormSubmitText">Save Product</span></button>
+                <button type="button" class="btn btn-ghost" id="cancelEditBtn" style="display:none;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
