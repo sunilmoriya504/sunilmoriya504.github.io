@@ -427,8 +427,15 @@ function closeAdmin() {
 function switchAdminTab(tab) {
   adminTab = tab;
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.adminTab === tab));
-  document.querySelectorAll('.admin-content').forEach(c => c.classList.toggle('active', c.id === 'admin'+tab.charAt(0).toUpperCase()+tab.slice(1)));
+  const tabMap = {
+    'dashboard': 'Dashboard',
+    'products': 'Products',
+    'orders-admin': 'OrdersAdmin',
+    'add-product': 'AddProduct'
+  };
+  document.querySelectorAll('.admin-content').forEach(c => c.classList.toggle('active', c.id === 'admin' + (tabMap[tab] || tab.charAt(0).toUpperCase() + tab.slice(1))));
   if (tab === 'orders-admin') renderAdminFullOrders();
+  if (tab === 'products') renderAdminProducts();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
